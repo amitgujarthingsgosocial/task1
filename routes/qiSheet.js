@@ -6,38 +6,52 @@ const httpErrors = require('http-errors');
 
 // include qiSheet model
    const qiSheetSchema = require('./../models/qiSheetSchema');
+   const qSchema = require('../models/qSchema.js');
 
  
-// create qisheet
-   router.post('/add',async(req,res,next) => {
 
-    try{
+   
+// create qisheet 1
+router.post('/add',async(req,res,next) => {
 
-      const sheetFormat = { 
+  try{
 
-        topic : req.body.topic,
-        m     : req.body.m,
-        n     : req.body.n,
-        param : req.body.param,
-        value : req.body.value
+    const sheetFormat = { 
 
-      };
+      topic : req.body.topic,
+      m     : req.body.m,
+      n     : req.body.n,
+      param : req.body.param,
+      value : req.body.value
 
-      const newSheet = new qiSheetSchema(sheetFormat);
-      const savedSheet = await newSheet.save();
+    };
 
-      // res.status(200).
-      // json({ "status":200 ,"msg":"sheet created successfully" });
+    const newSheet = new qiSheetSchema(sheetFormat);
+    const savedSheet = await newSheet.save();
+     
+    const update  = await  qSchema.
+                          findByIdAndUpdate(req.body.qsheetId,{
+                            $push: { 
+                              sheets:
+                               { topic: savedSheet.topic, path: savedSheet._id }
+                             }}, { new: true }).select('sheets');
 
-      res.send(savedSheet);
+         
+    res.status(200).
+    json({ "status":200 ,"msg":"sheet created successfully" });
+
+    // res.send(update);
 
 
-    }catch(e){
-      
-      console.log(e);
-    }
+  }catch(e){
     
-   });
+    console.log(e);
+  }
+  
+ });
+
+
+
 
 // delete qisheet
    router.delete('/delete/:qId',async(req,res,next)=>{
