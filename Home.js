@@ -46,7 +46,16 @@ export const Home = () => {
 
    const addNewRow = () =>{
 
-     const temp = ['amit ','sumit','rohit'];
+     const len = data.rows.length;
+       
+     const temp = [];
+       
+       for (let i=0; i < len , i++)
+       {
+           temp[i] = "";   
+       }    
+       
+    
     
      setlistrow([...listrow,temp])
 
